@@ -1,0 +1,62 @@
+{
+  "name": "tokensky_otc_server",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "egg": {
+    "declarations": true
+  },
+  "dependencies": {
+    "@alicloud/pop-core": "^1.7.7",
+    "bignumber.js": "^8.1.1",
+    "captchapng": "0.0.1",
+    "crypto-js": "^3.1.9-1",
+    "egg": "^2.15.1",
+    "egg-multipart": "^2.7.1",
+    "egg-mysql": "^3.0.0",
+    "egg-scripts": "^2.11.0",
+    "invite-code": "0.0.2",
+    "jpush-async": "^4.0.2",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.24.0",
+    "parameter": "^3.6.0",
+    "qiniu": "^6.1.13",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.4",
+    "svg-captcha": "^1.4.0",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "autod": "^3.0.1",
+    "autod-egg": "^1.1.0",
+    "egg-bin": "^4.11.0",
+    "egg-ci": "^1.11.0",
+    "egg-mock": "^3.21.0",
+    "eslint": "^5.13.0",
+    "eslint-config-egg": "^7.1.0"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "scripts": {
+    "start": "egg-scripts start --port=8001 --daemon --title=egg-server-tokensky_otc_server",
+    "stop": "egg-scripts stop --port=8001 --title=egg-server-tokensky_otc_server",
+    "dev": "egg-bin dev --port=8001 ",
+    "debug": "egg-bin debug --port=8001",
+    "test": "npm run lint -- --fix && npm run test-local",
+    "test-local": "egg-bin test",
+    "cov": "egg-bin cov",
+    "lint": "eslint .",
+    "ci": "npm run lint && npm run cov",
+    "autod": "autod"
+  },
+  "ci": {
+    "version": "10"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "author": "",
+  "license": "MIT"
+}
