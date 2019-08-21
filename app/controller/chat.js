@@ -42,6 +42,8 @@ class ChatController extends Controller {
                 }
             }
 
+            
+            let unreadData = await ctx.service.chat.getChatUnreadList(userId);
             let result = [];
             for (let j = 0; j < data.length; j++) {
                 let fmsg = await this.ctx.service.chat.getFirstMessage(data[j].order_id, userId);
@@ -55,9 +57,20 @@ class ChatController extends Controller {
                 } else if (userId == data[j].vendor_user_id) {
                     orderUser = 'vendor'
                 }
+                console.log("==chatList=> result=",data[j].order_status)
+                let unreadNum = 0;
+                if(unreadData){
+                    for(let u = 0; u < unreadData.length; u++){
+                        if(unreadData[u] == undefined){ continue;}
+                        if(data[j].order_id == unreadData[u].order_id){
+                            unreadNum = unreadData[u].count;
+                        }
+                    }
+                }
                 result.push({
                     room_id: data[j].order_id,
                     avatar: data[j].avatar,
+                    unreadNum: unreadNum,
                     nick_name: data[j].nick_name,
                     msg: msg,
                     time: data[j].buy_order_time ? dateUtil.format(data[j].buy_order_time) : '',
@@ -69,8 +82,8 @@ class ChatController extends Controller {
                 })
             }
 
+            console.log("==chatList=> result=",result, result.length)
             response.content.data = result;
-
 
             return ctx.body = response;
 
@@ -164,6 +177,7 @@ class ChatController extends Controller {
         let {ctx} = this;
         let roomId = ctx.query.roomId;
         let response = Response();
+        console.log("==getChatMessageList=> roomId=",roomId)
         try {
             if (!roomId) {
                 response.errMsg('roomId require', code.ERROR_PARAMS, 'ERROR_PARAMS');
@@ -230,6 +244,9 @@ class ChatController extends Controller {
             result.sort(function (a, b) {
                 return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
             });
+            
+            /// 打开即消息内容已读
+            await ctx.service.chat.updateOtcChatRecord({status: 1}, {order_id: roomId});
 
             response.content.data = result;
             response.content.currentPage = index;
@@ -270,10 +287,11 @@ class ChatController extends Controller {
             let json = await this.ctx.checkToken();
             let userId = json.uid;
 
+            console.log("=-==redPort ==> ",userId);
             let redProt = await this.ctx.service.chat.redPort(userId);
-
             response.content.redProt = redProt;
 
+            console.log("=-==redPort ==> ",redProt);
             return this.ctx.body = response;
 
         } catch (e) {

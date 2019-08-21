@@ -65,7 +65,7 @@ module.exports = {
     */
    async checkToken()
    {
-       console.error('token:',this.header.token)
+       //console.error('token:',this.header.token)
        let headerToken = this.header.token;
        if (headerToken == undefined){
            return false

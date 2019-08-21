@@ -8,7 +8,16 @@ class ChatService extends Service {
 
 
     async getChatList(userId) {
-        let sql = `select cr.*,o.buy_order_time,o.status,o.vendor_user_id,o.vendee_user_id from tokensky_otc_chat_room cr,otc_order o where cr.order_id=o.order_id and cr.create_time>=? and (cr.user_id=? or cr.user_id2=?) order by cr.create_time desc `;
+        let sql = `select cr.*,o.buy_order_time,o.status AS order_status,o.vendor_user_id,o.vendee_user_id from tokensky_otc_chat_room cr,otc_order o where cr.order_id=o.order_id and cr.create_time>=? and (cr.user_id=? or cr.user_id2=?) order by cr.create_time desc `;
+        let _D = moment().subtract(7, 'days');
+        let _SD = moment(_D).format('YYYY-MM-DD');
+        let result = await this.app.mysql.get(dbName).query(sql, [_SD, userId, userId]);
+        return result;
+    }
+
+    // 获取消息未读的条数
+    async getChatUnreadList(userId) {
+        let sql = `SELECT order_id, COUNT(order_id) as count FROM tokensky_otc_chat_record WHERE send_time >= ? AND (from_user_id = ? OR to_user_id = ?) AND status = 0 GROUP BY order_id`;
         let _D = moment().subtract(7, 'days');
         let _SD = moment(_D).format('YYYY-MM-DD');
         let result = await this.app.mysql.get(dbName).query(sql, [_SD, userId, userId]);
